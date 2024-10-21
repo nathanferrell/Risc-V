@@ -1,9 +1,9 @@
-timescale 1us/100ns
+`timescale 1us/100ns
 `define INST_ENCODING_JAL 32'bxxxxxxxxxxxxxxxxxxxxxxxxx1101111
 `define INST_ENCODING_JALR 32'bxxxxxxxxxxxxxxxxx000xxxxx1100111
 `define INST_ENCODING_BEQ 32'bxxxxxxxxxxxxxxxxx000xxxxx1100011
 `define INST_ENCODING_ADDI 32'bxxxxxxxxxxxxxxxxx000xxxxx0010011
-
+ 
 `define NEXT_PC_FROM_RF 3'b111
  
 `define PC_FROM_PC_PLUS_4 3'b000
