@@ -67,7 +67,7 @@ RegFile rgf(.ra0(inst_encoding[19:15]), .ra1(inst_encoding[24:20]), .wa(inst_enc
  
 decode d(.inst_encoding(inst_encoding), .next_pc_sel(pc_sel));
  
-Mux8to1 mx(.inp0(), .inp1(), .inp2(), .inp3(), .inp4(), .inp5(), .inp6(), .inp7(), .sel(pc_sel),.out(next_pc));
+//Mux8to1 mx(.inp0(), .inp1(), .inp2(), .inp3(), .inp4(), .inp5(), .inp6(), .inp7(), .sel(pc_sel),.out(next_pc));
  
 assign immediatejal = {{13{inst_encoding[31]}}, inst_encoding[19:12], inst_encoding[20], inst_encoding[30:21], 1'b0};
 assign immediateaiupc = {inst_encoding[31:12], 12'b0};
