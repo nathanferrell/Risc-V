@@ -32,7 +32,8 @@ wire pc_write_enable;
 reg[31:0] next_pc;
  
 wire[31:0]pc_plus_4 = pc + 32'd4;
- 
+
+ wire[31:0] ALU_Out;
  
 wire[31:0] pc_from_rf= rf_out_0;
  
@@ -63,11 +64,13 @@ assign pc_write_enable = 1'b1;
 Register32 pcModule(.clock(clk), .reset(rst), .we(pc_write_enable), .wd(next_pc), .out(pc));
  
  
-memory2c mem(.data_out(inst_encoding), .data_in(32'b0), .addr(pc), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(clk), .rst(rst));
+memory2c Imem(.data_out(inst_encoding), .data_in(32'b0), .addr(pc), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(clk), .rst(rst));
  
 RegFile rgf(.ra0(inst_encoding[19:15]), .ra1(inst_encoding[24:20]), .wa(inst_encoding[11:7]), .wd(32'b0), .we(32'b0), .clk(clk), .rst(rst), .do0(rf_out_0), .do1(rf_out_1));
  
-ALU al(.input_one(rf_out_0), .input_two(Alu_in_2), .func(), .out(), .zeroflg(), .cout());
+ ALU al(.input_one(rf_out_0), .input_two(Alu_in_2), .func(), .out(ALU_Out), .zeroflg(), .cout());
+
+ memory2c Dmem(.data_out(inst_encoding), .data_in(rf_out_1), .addr(ALU_Out), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(clk), .rst(rst));
  
 assign Alu_in_2 = S ? rf_out_1:immediatebrch;
  
