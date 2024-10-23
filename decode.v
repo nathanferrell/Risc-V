@@ -1,7 +1,7 @@
 `timescale 1us/100ns
 `include "decode.vh"
-module decode(inst_encoding, next_pc_sel);
- 
+module decode(inst_encoding, next_pc_sel, function_code);
+ input wire [3:0] function_code;
 input wire [31:0] inst_encoding;
 output reg[2:0] next_pc_sel;
  
@@ -11,13 +11,13 @@ casex(inst_encoding)
 //are next_pc_sel set equal to the correct tic defines?
 `INST_ENCODING_JAL: begin
 next_pc_sel = `PC_PLUS_JAL_IMM;
- 
-end
+ function_code = 4'b
+end 
  
  
 `INST_ENCODING_JALR:begin
- 
 next_pc_sel = `NEXT_PC_FROM_RF;
+ 
  
 end
  
