@@ -24,8 +24,9 @@ wire[31:0] immediateaiupc;
 wire[31:0] immediatelui;
  
 wire[31:0] immediatebrch;
- 
-wire[2:0] S;
+
+ wire ALU_Cout
+wire ALU_Scase;
  
 wire[2:0] pc_sel;
 wire pc_write_enable;
@@ -68,11 +69,11 @@ memory2c Imem(.data_out(inst_encoding), .data_in(32'b0), .addr(pc), .enable(1'b1
  
 RegFile rgf(.ra0(inst_encoding[19:15]), .ra1(inst_encoding[24:20]), .wa(inst_encoding[11:7]), .wd(32'b0), .we(32'b0), .clk(clk), .rst(rst), .do0(rf_out_0), .do1(rf_out_1));
  
- ALU al(.input_one(rf_out_0), .input_two(Alu_in_2), .func(), .out(ALU_Out), .zeroflg(), .cout());
+ ALU al(.input_one(rf_out_0), .input_two(Alu_in_2), .func(), .out(ALU_Out), .zeroflg(), .cout(ALU_Cout));
 
  memory2c Dmem(.data_out(inst_encoding), .data_in(rf_out_1), .addr(ALU_Out), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(clk), .rst(rst));
  
-assign Alu_in_2 = S ? rf_out_1:immediatebrch;
+assign Alu_in_2 = ALU_Scase ? rf_out_1:immediatebrch;
  
  
 decode d(.inst_encoding(inst_encoding), .next_pc_sel(pc_sel));
