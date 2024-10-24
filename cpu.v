@@ -1,4 +1,4 @@
-`timescale 1us/1us
+`timescale 1us/100ns
  
 `include "decode.vh"
 module cpu(clk, rst);
