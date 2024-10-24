@@ -13,7 +13,9 @@ wire[31:0] immediatejal;
 wire[31:0] immediateaiupc;
 wire[31:0] immediatelui;
 wire[31:0] immediatebrch;
-
+ 
+wire[31:0] DmemOut;
+wire outputWE;
  
 wire[3:0] function_code;
 wire ALU_Cout;
@@ -42,13 +44,13 @@ Register32 pcModule(.clock(clk), .reset(rst), .we(pc_write_enable), .wd(next_pc)
  
 memory2c Imem(.data_out(inst_encoding), .data_in(32'b0), .addr(pc), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(clk), .rst(rst));
  
-RegFile rgf(.ra0(inst_encoding[19:15]), .ra1(inst_encoding[24:20]), .wa(inst_encoding[11:7]), .wd(32'b0), .we(32'b0), .clk(clk), .rst(rst), .do0(rf_out_0), .do1(rf_out_1));
+RegFile rgf(.ra0(inst_encoding[19:15]), .ra1(inst_encoding[24:20]), .wa(inst_encoding[11:7]), .wd(ALU_Out), .we(outputWE), .clk(clk), .rst(rst), .do0(rf_out_0), .do1(rf_out_1));
  
 ALU al(.input_one(rf_out_0), .input_two(Alu_in_2), .func(function_code), .out(ALU_Out), .zeroflg(), .cout(ALU_Cout));
-memory2c Dmem(.data_out(inst_encoding), .data_in(rf_out_1), .addr(ALU_Out), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(clk), .rst(rst));
+memory2c Dmem(.data_out(DmemOut), .data_in(rf_out_1), .addr(ALU_Out), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(clk), .rst(rst));
 assign Alu_in_2 = ALU_Scase ? rf_out_1:immediatebrch;
  
-decode d(.inst_encoding(inst_encoding), .next_pc_sel(pc_sel), .function_code(function_code));
+decode d(.inst_encoding(inst_encoding), .next_pc_sel(pc_sel), .function_code(function_code), .outputWE(outputWE));
 //Mux8to1 mx(.inp0(), .inp1(), .inp2(), .inp3(), .inp4(), .inp5(), .inp6(), .inp7(), .sel(pc_sel),.out(next_pc));
 assign immediatejal = {{13{inst_encoding[31]}}, inst_encoding[19:12], inst_encoding[20], inst_encoding[30:21], 1'b0};
 assign immediateaiupc = {inst_encoding[31:12], 12'b0};
